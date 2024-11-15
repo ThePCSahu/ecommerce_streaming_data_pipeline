@@ -1,6 +1,14 @@
 
 # E-Commerce Orders & Payments Validation Streaming Pipeline
 
+## Tech Stack
+
+- **Kafka**: Message broker for real-time data streaming.
+- **Spark Streaming**: Real-time data processing.
+- **MongoDB**: NoSQL database for storing validated data.
+- **Python**: Programming language for implementing the streaming application.
+- **Docker**: Containerization platform for running Kafka and MongoDB.
+
 ## Overview
 
 This project implements a real-time streaming pipeline for validating e-commerce orders and payments. It processes data from Kafka topics, validates payment amounts, and stores validated records in MongoDB.
@@ -62,10 +70,6 @@ This diagram illustrates the architecture and data flow of the ecommerce orders 
 ```
 
 ## Setup
-
-### Prerequisites
-- **Docker**: For running Kafka and MongoDB containers.
-- **Python**: Install required packages.
 
 ### Setup Steps
 
