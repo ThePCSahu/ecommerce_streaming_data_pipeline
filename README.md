@@ -1,101 +1,80 @@
 
-# E-Commerce Orders & Payments Validation Streaming Data Pipeline
+# E-Commerce Orders & Payments Validation Streaming Pipeline
 
-## Project Overview
+## Overview
 
-This project implements a real-time streaming data pipeline for validating e-commerce orders and payments. The pipeline reads data from Kafka topics in Avro format, validates the payment amount against the order amount, and stores the validated data in MongoDB for further analysis and consumption.
+This project implements a real-time streaming pipeline for validating e-commerce orders and payments. It processes data from Kafka topics, validates payment amounts, and stores validated records in MongoDB.
 
 ### Key Features:
-- **Real-time Streaming**: Processes order and payment streams from Kafka.
-- **Validation Logic**: Validates if the payment amount matches the corresponding order amount.
-- **Fault Tolerance**: Utilizes Spark's checkpointing mechanism.
-- **Late Data Handling**: Configured watermarking time of 10 minutes to handle late data.
+- **Validation**: Ensures payment matches the order amount.
+- **Real-time Streaming**: Processes orders and payments from Kafka.
+- **Fault Tolerance**: Uses Spark checkpointing for reliability.
+- **Late Data Handling**: Configured with a 10-minute watermark.
 
 ## Components
 
-### 1. Mock Data Producer
-- Publishes mock order and payment data to Kafka topics for testing and development.
-- Designed for non-production environments.
+- **Mock Data Producer**: Simulates order and payment data for testing.
+- **E-Commerce Streaming App**: Consumes data from Kafka, validates payments, and stores validated data in MongoDB.
 
-### 2. E-Commerce Streaming App
-- Reads data streams from Kafka.
-- Validates payments against orders.
-- Saves validated data (fact data) to MongoDB.
-
-## Setup Instructions
+## Setup
 
 ### Prerequisites
-- **Docker**: Ensure Docker is installed for running Kafka and MongoDB containers.
-- **Python Environment**: Set up a Python environment with the required packages.
+- **Docker**: For running Kafka and MongoDB containers.
+- **Python**: Install required packages.
 
-### Steps to Set Up
+### Setup Steps
 
-1. **Spin up Kafka and MongoDB Containers**  
-   Use the provided Docker Compose file to start the necessary containers:
+1. **Start Kafka and MongoDB Containers**  
    ```bash
    docker compose up -d
    ```
 
-2. **Install Required Python Packages**  
-   Install Spark and Kafka dependencies:
+2. **Install Dependencies**  
    ```bash
    pip install pyspark==3.5.0 confluent-kafka
    ```
 
-3. **Configure Kafka and MongoDB Credentials**  
-   Update the configuration in the `E-Commerce Streaming App` to connect to Kafka and MongoDB.
+3. **Configure Kafka and MongoDB**  
+   Update connection settings in the streaming app.
 
 4. **Login to Kafka Control Center**  
-   Kafka Control Center allows you to manage Kafka topics and monitor streams.
-   - Navigate to [http://localhost:9021](http://localhost:9021).
-   - Use the default credentials (or as configured in Docker Compose):
-     - **Username**: admin  
-     - **Password**: password  
+   Access at [http://localhost:9021](http://localhost:9021) with default credentials:
+   - **Username**: admin  
+   - **Password**: password
 
 5. **Create Kafka Topics**  
-   Use Kafka Control Center to create the necessary topics:
-   - **orders**: For order data.
-   - **payments**: For payment data.
-   
-   **Configuration**:
-   - Set **Partitions** to 3 (or more for higher parallelism).
-   - Optionally enable **Log Compaction** for deduplication.
+   Create `orders` and `payments` topics with 3+ partitions.
 
-6. **Set Up MongoDB Database and Collection**  
-   Access MongoDB and create the database and collection:
+6. **Set Up MongoDB**  
+   Create the database and collection:
    ```bash
    docker exec -it <mongodb_container_name> mongosh
    ```
    ```javascript
-   use ecomm_mart; // Create or switch to the database
+   use ecomm_mart;
    db.createCollection("validated_orders");
-   show collections; // Verify the collection
    ```
 
-7. **Start the Mock Data Producer**  
-   Publish mock data to Kafka topics:
+7. **Start Mock Data Producer**  
    ```bash
    python mock_data_producer.py
    ```
 
-8. **Start the E-Commerce Streaming App**  
-   Run the streaming application:
+8. **Run Streaming App**  
    ```bash
    python ecomm_streaming_app.py
    ```
 
-### Technical Configuration
+## Technical Configuration
 
-#### Kafka Configuration in `ecomm_streaming_app.py`
-Ensure the app connects to the correct Kafka topics:
+### Kafka Setup
 ```python
 kafka_brokers = "localhost:9092"
 order_topic = "orders"
 payment_topic = "payments"
 ```
 
-#### MongoDB Configuration in `ecomm_streaming_app.py`
-Ensure MongoDB integration:
+### MongoDB Setup
 ```python
 from pymongo import MongoClient
 
@@ -104,23 +83,16 @@ db = mongo_client.ecomm_mart
 validated_collection = db.validated_orders
 ```
 
----
-
 ## Technical Details
 
-### Watermarking
-- Configured to handle late data with a **10-minute watermark**. Ensures that events arriving within this period are still processed correctly.
-
-### Fault Tolerance
-- **Checkpointing** is implemented to recover from failures and ensure data consistency.
+- **Watermarking**: 10-minute watermark for handling late data.
+- **Fault Tolerance**: Checkpointing for recovery and data consistency.
 
 ### Data Flow
-1. **Order and Payment Streams** are consumed from Kafka topics.
-2. **Validation Logic** checks if the payment amount matches the order amount.
-3. **Validated Records** are saved to MongoDB for downstream consumption.
-
----
+1. Consume Orders and Payments from Kafka.
+2. Validate Payments against Orders.
+3. Store Validated Data in MongoDB.
 
 ## Conclusion
 
-This pipeline ensures robust and real-time validation of e-commerce transactions, providing a reliable data stream for analysis and reporting. It can be seamlessly integrated into production systems and scaled for high-throughput environments.
+This pipeline ensures reliable, real-time validation of e-commerce transactions, supporting data consistency and scalability.
