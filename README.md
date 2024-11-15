@@ -16,6 +16,51 @@ This project implements a real-time streaming pipeline for validating e-commerce
 - **Mock Data Producer**: Simulates order and payment data for testing.
 - **E-Commerce Streaming App**: Consumes data from Kafka, validates payments, and stores validated data in MongoDB.
 
+
+
+## System Diagram
+This diagram illustrates the architecture and data flow of the ecommerce orders & payments validation streaming pipeline, showing the key components and their interactions.
+
+```
+               +-----------------------+
+               |   Mock Data Producer  |
+               |   (Simulates Orders   |
+               |   and Payments)       |
+               +-----------------------+
+                          |
+                          v
+               +--------------------- -+
+               |        Kafka          |
+               |   (Message Broker)    |
+               |   +---------------+   |
+               |   | Orders Topic  |   |
+               |   +---------------+   |
+               |   | Payments Topic|   |
+               |   +---------------+   |
+               +-----------------------+
+                         |
+                         v
+               +-----------------------+
+               |   Spark Streaming     |
+               |   (Processes Orders   |
+               |   and Payments)       |
+               +-----------------------+
+                         |
+                         v
+               +-----------------------+
+               |       MongoDB         |
+               |   +---------------+   |
+               |   |   ecomm_mart  |   |
+               |   |   (Database)  |   |
+               |   | +-----------+ |   |
+               |   | | validated | |   |
+               |   | | _orders   | |   |
+               |   | | Collection| |   |
+               |   | +-----------+ |   |
+               |   +---------------+   |
+               +-----------------------+
+```
+
 ## Setup
 
 ### Prerequisites
