@@ -9,8 +9,7 @@ This project implements a real-time streaming data pipeline for validating e-com
 - **Real-time Streaming**: Processes order and payment streams from Kafka.
 - **Validation Logic**: Validates if the payment amount matches the corresponding order amount.
 - **Fault Tolerance**: Utilizes Spark's checkpointing mechanism.
-- **Late Data Handling**: Configured watermarking time of 30 minutes to handle late data.
-- **Scalability**: Can be used in production and non-production environments.
+- **Late Data Handling**: Configured watermarking time of 10 minutes to handle late data.
 
 ## Components
 
@@ -68,7 +67,7 @@ This project implements a real-time streaming data pipeline for validating e-com
    docker exec -it <mongodb_container_name> mongosh
    ```
    ```javascript
-   use ecomm_mart; // Create or switch to database
+   use ecomm_mart; // Create or switch to the database
    db.createCollection("validated_orders");
    show collections; // Verify the collection
    ```
@@ -101,8 +100,8 @@ Ensure MongoDB integration:
 from pymongo import MongoClient
 
 mongo_client = MongoClient("mongodb://localhost:27017/")
-db = mongo_client.ecomm_db
-validated_collection = db.validated_transactions
+db = mongo_client.ecomm_mart
+validated_collection = db.validated_orders
 ```
 
 ---
@@ -110,7 +109,7 @@ validated_collection = db.validated_transactions
 ## Technical Details
 
 ### Watermarking
-- Configured to handle late data with a **10-minute watermark**. Ensures that events arriving within 30 minutes are still processed correctly.
+- Configured to handle late data with a **10-minute watermark**. Ensures that events arriving within this period are still processed correctly.
 
 ### Fault Tolerance
 - **Checkpointing** is implemented to recover from failures and ensure data consistency.
